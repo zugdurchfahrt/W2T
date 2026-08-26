@@ -49,7 +49,7 @@ async def main():
     with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
         original_content = f.read()
     
-    head_str = original_content[:200]
+    head_str = original_content[:2000]
     try:
         check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head_str))
     except RPCError as e:
