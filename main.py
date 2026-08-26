@@ -148,14 +148,18 @@ async def main():
         print(f"Uploading media {idx+1}/{len(valid_media_files)}: {filename}...")
         uploaded_media = await client.upload_file(filepath)
         
-        ext = filename.split('.')[-1].lower()
-        mime_type = 'application/octet-stream'
-        if ext in ['jpg', 'jpeg', 'png', 'webp']:
-            mime_type = f'image/{ext}'
-        elif ext in ['mp4', 'mov', 'avi']:
-            mime_type = f'video/{ext}'
-        elif ext in ['mp3', 'ogg', 'opus', 'wav']:
-            mime_type = f'audio/{ext}'
+        # Determine mime type robustly
+        import mimetypes
+        mime_type, _ = mimetypes.guess_type(filename)
+        if not mime_type:
+            # Fallback for some common WhatsApp extensions if mimetypes fails
+            ext = filename.split('.')[-1].lower()
+            if ext == 'opus':
+                mime_type = 'audio/ogg'
+            elif ext == 'webp':
+                mime_type = 'image/webp'
+            else:
+                mime_type = 'application/octet-stream'
 
         media_obj = types.InputMediaUploadedDocument(
             file=uploaded_media,
