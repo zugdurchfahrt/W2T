@@ -41,9 +41,9 @@ async def main():
     try:
         await client.start()
     except asyncio.exceptions.IncompleteReadError:
-        print("\n[!] ОШИБКА: Сервер Telegram разорвал соединение (0 bytes read).")
-        print("[!] Сессия была аннулирована или сработал Anti-Flood Telegram.")
-        print("[!] Попробуйте сменить IP/VPN-сервер и подождать некоторое время перед повторным запуском.")
+        print("\n[!] ERROR: Telegram server closed the connection abruptly (0 bytes read).")
+        print("[!] Your session was revoked or Telegram's Anti-Flood system blocked your IP.")
+        print("[!] Please try changing your VPN server and wait some time before trying again.")
         return
     except ConnectionError:
         print("\n[!] Connection to Telegram failed.")
