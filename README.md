@@ -1,6 +1,6 @@
-# w2t (WhatsApp to Telegram)
+# w2t (WhatsApp to Telegram chat migration)
 
-A Python CLI utility that migrates your exported WhatsApp chats (including all media files) directly into Telegram using the official MTProto API.
+Utility migrates your exported WhatsApp chats (including all media files) directly into Telegram using the official MTProto API.
 
 Unlike bots or message forwarders, this tool utilizes Telegram's native `InitHistoryImportRequest` API. This ensures that your chat history is imported with the **original timestamps**, making it appear as a natural Telegram chat history.
 
