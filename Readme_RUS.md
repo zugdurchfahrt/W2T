@@ -1,6 +1,6 @@
-# w2t (WhatsApp в Telegram)
+# W2T (экспорт чатов WhatsApp в Telegram)
 
-Утилита для переноса экспортированных чатов из WhatsApp (включая все медиафайлы) напрямую в Telegram через официальное MTProto API.
+Утилита для экспорта чатов из WhatsApp (включая все медиафайлы) напрямую в Telegram через официальное MTProto API.
 
 В отличие от ботов и пересылки сообщений, этот скрипт использует нативный метод Telegram `InitHistoryImportRequest`. Благодаря этому вся история импортируется с **оригинальными датами и временем**, сохраняя вид естественной переписки.
 
@@ -20,7 +20,7 @@
 - [Telethon](https://github.com/LonamiWebs/Telethon) (устанавливается автоматически через `requirements.txt`)
 
 ## Установка
-1. Склонируйте репозиторий:
+1. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/your-username/w2t.git
    cd w2t
