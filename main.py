@@ -29,7 +29,13 @@ async def main():
     print(f"Found chat file: {chat_file}")
 
     client = TelegramClient('whatsapp_import_session', api_id, api_hash)
-    await client.start()
+    try:
+        await client.start()
+    except ConnectionError:
+        print("\n[!] Connection to Telegram failed.")
+        print("[!] If you are in a region with restricted access to Telegram (e.g., Russia), the initial connection might be blocked by your ISP.")
+        print("[!] Please turn on a VPN and try again.")
+        return
 
     # Get target chat
     dialogs = await client.get_dialogs()
@@ -86,7 +92,7 @@ async def main():
         return
 
     # Parse media files from the chat log
-    # Example format: 09/07/2019, 14:33 - Алина Ким: IMG-20190709-WA0000.jpg (file attached)
+    # Example format: 09/07/2019, 14:33 - John De: IMG-20190709-WA0000.jpg (file attached)
     media_pattern = re.compile(r'([A-Za-z0-9\-\_]+\.[a-zA-Z0-9]+)\s+\(file attached\)')
     with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
