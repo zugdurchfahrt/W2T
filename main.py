@@ -35,7 +35,9 @@ async def main():
     chat_file = os.path.join(export_dir, txt_files[0])
     print(f"Found chat file: {chat_file}")
 
-    client = TelegramClient('whatsapp_import_session', api_id, api_hash)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    session_path = os.path.join(script_dir, 'whatsapp_import_session')
+    client = TelegramClient(session_path, api_id, api_hash)
     try:
         await client.start()
     except ConnectionError:
