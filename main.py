@@ -82,15 +82,36 @@ async def main():
             print(f"Failed to migrate group to supergroup: {e}. Please manually make the group history visible in Telegram settings.")
             return
 
-    with open(chat_file, 'rb') as f:
-        head = f.read(100)
+    is_target_group = isinstance(peer, (types.InputPeerChat, types.InputPeerChannel))
+    with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
+        original_content = f.read()
     
+    head_str = original_content[:200]
     try:
-        check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head.decode('utf-8', errors='ignore')))
-        print("Check result:", check_res)
+        check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head_str))
+        print("Initial parse result:", check_res)
     except RPCError as e:
         print(f"CheckHistoryImport failed: {e}")
         return
+        
+    upload_content_bytes = None
+    
+    if is_target_group and not getattr(check_res, 'group', False):
+        print("\n[!] Mismatch: Trying to import a Private Chat export into a Telegram Group.")
+        print("[!] Injecting fake group creation header to trick Telegram into accepting it...")
+        fake_header = '01/01/2000, 00:00 - You created group "Imported"\n'
+        modified_content = fake_header + original_content
+        head_str = modified_content[:200]
+        # Re-check to ensure it's valid
+        check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head_str))
+        print("Modified parse result:", check_res)
+        upload_content_bytes = modified_content.encode('utf-8')
+    elif not is_target_group and getattr(check_res, 'group', False):
+        print("\n[!] Mismatch: Trying to import a Group Chat export into a Private Chat.")
+        print("[!] Note: This is usually rejected by Telegram, but we will attempt it.")
+        upload_content_bytes = original_content.encode('utf-8')
+    else:
+        upload_content_bytes = original_content.encode('utf-8')
 
     try:
         check_peer = await client(functions.messages.CheckHistoryImportPeerRequest(peer=peer))
@@ -100,21 +121,20 @@ async def main():
         return
 
     # Parse media files from the chat log
-    # Example format: 09/07/2019, 14:33 - John De: IMG-20190709-WA0000.jpg (file attached)
     media_pattern = re.compile(r'([A-Za-z0-9\-\_]+\.[a-zA-Z0-9]+)\s+\(file attached\)')
-    with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
-        content = f.read()
-        media_files = media_pattern.findall(content)
-    
-    media_files = list(set(media_files)) # deduplicate
+    media_files = list(set(media_pattern.findall(original_content)))
     print(f"\nFound {len(media_files)} attached media references in the log.")
 
-    # Only include media files that actually exist in the directory
     valid_media_files = [f for f in media_files if os.path.exists(os.path.join(export_dir, f))]
     print(f"Found {len(valid_media_files)} matching files in the directory.")
 
     print("\nUploading chat text file...")
-    uploaded_txt = await client.upload_file(chat_file)
+    temp_chat_file = os.path.join(export_dir, '_telegram_import_temp.txt')
+    with open(temp_chat_file, 'wb') as f:
+        f.write(upload_content_bytes)
+        
+    uploaded_txt = await client.upload_file(temp_chat_file)
+    os.remove(temp_chat_file)
 
     print("Initializing history import...")
     try:
