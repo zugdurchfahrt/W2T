@@ -1,4 +1,4 @@
-# w2t (WhatsApp to Telegram chat migration)
+# w2t (WhatsApp to Telegram chat migration tool)
 
 Utility migrates your exported WhatsApp chats (including all media files) directly into Telegram using the official MTProto API.
 
@@ -66,3 +66,4 @@ When importing into a group, Telegram hides imported messages from participants 
 | `IncompleteReadError (0 bytes read)` | Your session was revoked or Telegram's Anti-Flood triggered. Change your VPN server and wait before retrying. |
 | `IMPORT_PEER_TYPE_INVALID` | Chat type mismatch. Make sure you select the correct import type (Private vs. Group). |
 | Media files not found | Ensure the media files are in the same folder as the `.txt` file and their names match exactly. |
+| Console appears frozen when entering password | This is expected. When Telegram prompts for your 2FA password, the console deliberately hides your input (no characters are displayed while you type). Just type your password and press Enter — it is being recorded. |
