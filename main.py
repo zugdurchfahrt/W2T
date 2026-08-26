@@ -39,8 +39,16 @@ async def main():
 
     # Get target chat
     dialogs = await client.get_dialogs()
+    
+    # Filter out deactivated basic groups (which appear as duplicates when migrated to supergroups)
+    active_dialogs = []
+    for d in dialogs:
+        if getattr(d.entity, 'deactivated', False) or getattr(d.entity, 'migrated_to', None) is not None:
+            continue
+        active_dialogs.append(d)
+
     print("\nRecent dialogs:")
-    for i, dialog in enumerate(dialogs[:15]):
+    for i, dialog in enumerate(active_dialogs[:15]):
         print(f"{i}: {dialog.name} (ID: {dialog.id})")
     print("...")
     
@@ -50,8 +58,8 @@ async def main():
     else:
         try:
             choice_idx = int(choice)
-            if choice_idx < len(dialogs):
-                peer = dialogs[choice_idx].input_entity
+            if choice_idx < len(active_dialogs):
+                peer = active_dialogs[choice_idx].input_entity
             else:
                 peer = await client.get_input_entity(int(choice))
         except (ValueError, IndexError):
