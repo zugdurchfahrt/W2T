@@ -82,42 +82,39 @@ async def main():
             print(f"Failed to migrate group to supergroup: {e}. Please manually make the group history visible in Telegram settings.")
             return
 
-    is_target_group = isinstance(peer, (types.InputPeerChat, types.InputPeerChannel))
     with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
         original_content = f.read()
     
     head_str = original_content[:200]
     try:
         check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head_str))
-        print("Initial parse result:", check_res)
     except RPCError as e:
         print(f"CheckHistoryImport failed: {e}")
         return
-        
-    upload_content_bytes = None
+
+    print("\nSelect the type of import you want to perform:")
+    print("1. Private Chat (Import into a 1-on-1 Telegram dialog)")
+    print("2. Group Chat (Import into a Telegram Group)")
+    import_type = input("Enter 1 or 2: ").strip()
     
-    if is_target_group and not getattr(check_res, 'group', False):
-        print("\n[!] Mismatch: Trying to import a Private Chat export into a Telegram Group.")
-        print("[!] Injecting fake group creation header to trick Telegram into accepting it...")
-        fake_header = '01/01/2000, 00:00 - You created group "Imported"\n'
-        modified_content = fake_header + original_content
-        head_str = modified_content[:200]
-        # Re-check to ensure it's valid
-        check_res = await client(functions.messages.CheckHistoryImportRequest(import_head=head_str))
-        print("Modified parse result:", check_res)
-        upload_content_bytes = modified_content.encode('utf-8')
-    elif not is_target_group and getattr(check_res, 'group', False):
-        print("\n[!] Mismatch: Trying to import a Group Chat export into a Private Chat.")
-        print("[!] Note: This is usually rejected by Telegram, but we will attempt it.")
-        upload_content_bytes = original_content.encode('utf-8')
+    upload_content_bytes = None
+
+    if import_type == '2':
+        if not getattr(check_res, 'group', False):
+            print("[i] Adapting the export file to be recognized as a Group Chat by Telegram...")
+            fake_header = '01/01/2000, 00:00 - You created group "Imported"\n'
+            upload_content_bytes = (fake_header + original_content).encode('utf-8')
+        else:
+            upload_content_bytes = original_content.encode('utf-8')
     else:
         upload_content_bytes = original_content.encode('utf-8')
 
     try:
         check_peer = await client(functions.messages.CheckHistoryImportPeerRequest(peer=peer))
-        print("Peer check result:", check_peer)
+        print("\nPeer check result:", check_peer)
     except RPCError as e:
-        print(f"Target chat does not allow import or error occurred: {e}")
+        print(f"\n[!] Target chat does not allow this type of import (or error occurred): {e}")
+        print("[!] Note: You cannot import a Private Chat into a Telegram Group.")
         return
 
     # Parse media files from the chat log
