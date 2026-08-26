@@ -125,7 +125,8 @@ async def main():
         print("[!] Note: You cannot import a Private Chat into a Telegram Group.")
         return
 
-    media_pattern = re.compile(r'([A-Za-z0-9\-\_]+\.[a-zA-Z0-9]+)\s+\(file attached\)')
+    # Parse media files from the chat log
+    media_pattern = re.compile(r':\s+(.+?)\s+\(file attached\)')
     media_files = list(set(media_pattern.findall(original_content)))
     print(f"\nFound {len(media_files)} attached media references in the log.")
 
