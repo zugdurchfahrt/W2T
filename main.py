@@ -56,17 +56,18 @@ async def main():
         print(f"CheckHistoryImport failed: {e}")
         return
     
-    upload_content_bytes = None
-
     if import_type == '2':
         if not getattr(check_res, 'group', False):
-            print("[i] Adapting the export file to be recognized as a Group Chat by Telegram...")
-            fake_header = '01/01/2000, 00:00 - You created group "Imported"\n'
-            upload_content_bytes = (fake_header + original_content).encode('utf-8')
-        else:
-            upload_content_bytes = original_content.encode('utf-8')
-    else:
-        upload_content_bytes = original_content.encode('utf-8')
+            print("\n[!] ERROR: You selected Group Chat import, but the provided file is a Private Chat export.")
+            print("[!] Telegram's API strictly forbids importing a Private Chat into a Group.")
+            print("[!] Please restart the script and select '1. Private Chat', then select the respective user dialog.")
+            return
+    elif import_type == '1':
+        if getattr(check_res, 'group', False):
+            print("\n[!] ERROR: You selected Private Chat import, but the provided file is a Group Chat export.")
+            print("[!] Telegram's API strictly forbids importing a Group Chat into a Private dialog.")
+            print("[!] Please restart the script and select '2. Group Chat'.")
+            return
 
     print("\n--- STEP 2: TARGET SELECTION ---")
     dialogs = await client.get_dialogs()
@@ -127,12 +128,7 @@ async def main():
     print(f"Found {len(valid_media_files)} matching files in the directory.")
 
     print("\nUploading chat text file...")
-    temp_chat_file = os.path.join(export_dir, '_telegram_import_temp.txt')
-    with open(temp_chat_file, 'wb') as f:
-        f.write(upload_content_bytes)
-        
-    uploaded_txt = await client.upload_file(temp_chat_file)
-    os.remove(temp_chat_file)
+    uploaded_txt = await client.upload_file(chat_file)
 
     print("Initializing history import...")
     try:
