@@ -10,7 +10,7 @@ Unlike bots or message forwarders, this tool utilizes Telegram's native `InitHis
 - Preserves original message timestamps and chronology.
 - Uploads and links all media files — images, videos, audio, documents (PDF, Word, Excel, PowerPoint, etc.).
 - Shows file sizes during upload for progress visibility.
-- Asks for explicit confirmation before starting the import to prevent accidental uploads.
+- Requires explicit user confirmation before starting the import to double-check the destination folder and prevent accidental uploads.
 - Automatically migrates Telegram Basic Groups to Supergroups when needed.
 - Gracefully handles connection errors, Anti-Flood restrictions, and network interruptions during media upload.
 - Properly closes the Telegram session on exit.
