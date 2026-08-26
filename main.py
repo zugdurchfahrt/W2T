@@ -14,7 +14,14 @@ async def main():
 
     api_id = args.api_id or int(input("Enter Telegram API ID: "))
     api_hash = args.api_hash or input("Enter Telegram API Hash: ")
-    export_dir = args.export_dir or input("Enter path to unzipped WhatsApp export directory: ")
+
+    print("\n--- STEP 1: IMPORT CONFIGURATION ---")
+    print("Select the type of import you want to perform:")
+    print("1. Private Chat (Import into a 1-on-1 Telegram dialog)")
+    print("2. Group Chat (Import into a Telegram Group)")
+    import_type = input("Enter 1 or 2: ").strip()
+
+    export_dir = args.export_dir or input("\nEnter path to unzipped WhatsApp export directory: ")
 
     if not os.path.isdir(export_dir):
         print(f"Error: Directory '{export_dir}' not found.")
@@ -37,7 +44,6 @@ async def main():
         print("[!] Please turn on a VPN and try again.")
         return
 
-    print("\n--- STEP 1: IMPORT CONFIGURATION ---")
     with open(chat_file, 'r', encoding='utf-8', errors='ignore') as f:
         original_content = f.read()
     
@@ -47,11 +53,6 @@ async def main():
     except RPCError as e:
         print(f"CheckHistoryImport failed: {e}")
         return
-
-    print("Select the type of import you want to perform:")
-    print("1. Private Chat (Import into a 1-on-1 Telegram dialog)")
-    print("2. Group Chat (Import into a Telegram Group)")
-    import_type = input("Enter 1 or 2: ").strip()
     
     upload_content_bytes = None
 
