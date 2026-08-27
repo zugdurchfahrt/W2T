@@ -19,7 +19,16 @@ Unlike bots or message forwarders, this tool utilizes Telegram's native `InitHis
 - Python 3.8+
 - [Telethon](https://github.com/LonamiWebs/Telethon) (installed automatically via `requirements.txt`)
 
-## Setup
+## Download (No Python Required)
+You don't need to install Python or use the command line to use this tool!
+
+1. Go to the [Releases](https://github.com/zugdurchfahrt/w2t/releases) page.
+2. Download **`w2t.exe`** from the **Assets** section of the latest release.
+3. Double-click the file to run it.
+
+> **Note on Windows SmartScreen:** Because this open-source tool does not have a paid digital signature certificate, Windows Defender SmartScreen might show a blue warning saying "Windows protected your PC" on the first run. This is a standard warning for indie applications. Click **More info** -> **Run anyway**.
+
+## Setup (For Developers)
 1. Clone this repository:
    ```bash
    git clone https://github.com/your-username/w2t.git
@@ -35,14 +44,11 @@ Unlike bots or message forwarders, this tool utilizes Telegram's native `InitHis
 1. Export your WhatsApp chat (with media, no size limits) to a `.zip` file on your phone and transfer it to your computer.
 2. Unzip the archive into a folder.
 3. **If importing into a group**: create a fresh Telegram group and **add all members before importing**. Telegram restricts visibility of imported messages to participants who were present at the time of import.
-4. Run the script:
+4. Run the executable (`w2t.exe`) or the Python script:
    ```bash
    python main.py
    ```
-   Or with command-line arguments:
-   ```bash
-   python main.py --api-id YOUR_API_ID --api-hash YOUR_API_HASH --export-dir /path/to/unzipped_export
-   ```
+   *(Advanced: You can also pass arguments via CLI: `python main.py --api-id YOUR_API_ID --api-hash YOUR_API_HASH --export-dir /path`)*
 5. Follow the interactive prompts:
    - **Step 1**: Select import type (Private Chat or Group Chat).
    - Enter the path to the unzipped WhatsApp export directory.
