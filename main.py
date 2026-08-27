@@ -214,4 +214,11 @@ async def main():
         await client.disconnect()
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        import traceback
+        print("\n[!] An unexpected error occurred:")
+        traceback.print_exc()
+    finally:
+        input("\nPress Enter to exit...")
