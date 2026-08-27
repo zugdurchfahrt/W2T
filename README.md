@@ -1,4 +1,4 @@
-# w2t (WhatsApp to Telegram chat migration tool)
+# W2T (WhatsApp to Telegram chat migration tool)
 
 Utility migrates your exported WhatsApp chats (including all media files) directly into Telegram using the official MTProto API.
 
@@ -15,10 +15,6 @@ Unlike bots or message forwarders, this tool utilizes Telegram's native `InitHis
 - Gracefully handles connection errors, Anti-Flood restrictions, and network interruptions during media upload.
 - Properly closes the Telegram session on exit.
 
-## Requirements
-- Python 3.8+
-- [Telethon](https://github.com/LonamiWebs/Telethon) (installed automatically via `requirements.txt`)
-
 ## Download (No Python Required)
 You don't need to install Python or use the command line to use this tool!
 
@@ -28,7 +24,13 @@ You don't need to install Python or use the command line to use this tool!
 
 > **Note on Windows SmartScreen:** Because this open-source tool does not have a paid digital signature certificate, Windows Defender SmartScreen might show a blue warning saying "Windows protected your PC" on the first run. This is a standard warning for indie applications. Click **More info** -> **Run anyway**.
 
+
 ## Setup (For Developers)
+
+## Requirements
+- Python 3.8+
+- [Telethon](https://github.com/LonamiWebs/Telethon) (installed automatically via `requirements.txt`)
+
 1. Clone this repository:
    ```bash
    git clone https://github.com/your-username/w2t.git
@@ -48,7 +50,7 @@ You don't need to install Python or use the command line to use this tool!
    ```bash
    python main.py
    ```
-   *(Advanced: You can also pass arguments via CLI: `python main.py --api-id YOUR_API_ID --api-hash YOUR_API_HASH --export-dir /path`)*
+   *(You can also pass arguments via CLI: `python main.py --api-id YOUR_API_ID --api-hash YOUR_API_HASH --export-dir /path`)*
 5. Follow the interactive prompts:
    - **Step 1**: Select import type (Private Chat or Group Chat).
    - Enter the path to the unzipped WhatsApp export directory.
